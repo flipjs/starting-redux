@@ -185,18 +185,19 @@ let AddTodo = ({ addTodo }) => {
   let input
 
   const onAddTodoClick = () => {
-    addTodo(input.getValue())
+    const text = input.getValue().trim()
+    text && addTodo(text)
     input.clearValue()
   }
 
   return (
     <div>
       <TextField
-        hintText='Add Todo'
+        hintText='Enter Todo'
         ref={ node => input = node }
       />
       { ' ' }
-      <RaisedButton label='Add Todo' onClick={ onAddTodoClick } />
+      <FlatButton primary label='Click to add' onClick={ onAddTodoClick } />
     </div>
   )
 }
@@ -258,8 +259,7 @@ const VisibleTodoList = connect(
 
 const AppBarExampleIconMenu = () => (
   <AppBar
-    style={ {backgroundColor: '#444'} }
-    title='Flipjs woz here!'
+    title='flipjs.io'
     iconElementRight={
       <IconMenu
         iconButtonElement={
@@ -282,8 +282,10 @@ const TodoApp = () => {
       <div className={ 'row' }>
         <AppBarExampleIconMenu />
       </div>
+      <div style={ {margin: '30px auto'} }>
+      </div>
       <div className={ 'row' }>
-        <div className={ 'col-sm-offset-4 col-sm-4' }>
+        <div className={ 'col-sm-offset-3 col-sm-6' }>
           <AddTodo />
           <VisibleTodoList />
           <Footer />
@@ -293,11 +295,8 @@ const TodoApp = () => {
   )
 }
 
-const myStore = createStore(todoApp)
-myStore.subscribe(() => console.log(myStore.getState().todos))
-
 ReactDOM.render(
-  <Provider store={ myStore }>
+  <Provider store={ createStore(todoApp) }>
     <TodoApp />
   </Provider>,
   document.getElementById('app')
