@@ -33,6 +33,7 @@ AddTodo = connect(
   (dispatch) => {
     return {
       addTodo: (text) => {
+        dispatch(createAction(C.SET_VISIBILITY_FILTER)({filter: C.SHOW_ALL}))
         dispatch(createAction(C.ADD_TODO)({
           id: nextTodoId++,
           text
