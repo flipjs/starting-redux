@@ -10,10 +10,10 @@ const TodoApp = () => {
       <div className={ 'row' }>
         <NavBar title='React-Redux Boilerplate' />
       </div>
-      <div style={ {margin: '30px auto'} }>
+      <div style={ {margin: 30} }>
       </div>
       <div className={ 'row' }>
-        <div className={ 'col-sm-offset-3 col-sm-6' }>
+        <div className= 'col-sm-offset-3 col-sm-6'>
           <AddTodo />
           <VisibleTodoList />
           <Footer />
