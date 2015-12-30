@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { createAction } from 'redux-actions'
+import toggleTodo from '../actions/toggle-todo'
 import TodoList from '../components/TodoList'
 import * as C from '../constants'
 
@@ -33,7 +33,7 @@ const mapDispatchToProps = (
 ) => {
   return {
     onTodoClick: (id) => {
-      dispatch(createAction(C.TOGGLE_TODO)({id}))
+      dispatch(toggleTodo(id))
     }
   }
 }

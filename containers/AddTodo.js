@@ -1,11 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { createAction } from 'redux-actions'
+import addTodo from '../actions/add-todo'
+import setVisibility from '../actions/set-visibility'
 import FlatButton from 'material-ui/lib/flat-button'
 import TextField from 'material-ui/lib/text-field'
 import * as C from '../constants'
-
-let nextTodoId = 0
 
 let AddTodo = ({ addTodo }) => {
   let input
@@ -33,11 +32,8 @@ AddTodo = connect(
   (dispatch) => {
     return {
       addTodo: (text) => {
-        dispatch(createAction(C.SET_VISIBILITY_FILTER)({filter: C.SHOW_ALL}))
-        dispatch(createAction(C.ADD_TODO)({
-          id: nextTodoId++,
-          text
-        }))
+        dispatch(setVisibility(C.SHOW_ALL))
+        dispatch(addTodo(text))
       }
     }
   }

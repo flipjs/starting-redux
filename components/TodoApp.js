@@ -5,15 +5,18 @@ import VisibleTodoList from '../containers/VisibleTodos'
 import Footer from './Footer'
 
 const TodoApp = () => {
+  const style = {
+    margin: 30
+  }
   return (
     <div>
-      <div className={ 'row' }>
+      <div className='row'>
         <NavBar title='React-Redux Boilerplate' />
       </div>
-      <div style={ {margin: 30} }>
+      <div style={ style }>
       </div>
-      <div className={ 'row' }>
-        <div className= 'col-sm-offset-3 col-sm-6'>
+      <div className='row'>
+        <div className='col-sm-6 col-sm-offset-4'>
           <AddTodo />
           <VisibleTodoList />
           <Footer />
