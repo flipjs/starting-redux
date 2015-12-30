@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { createStore, combineReducers } from 'redux'
 import { Provider, connect } from 'react-redux'
+import { createAction, handleActions } from 'redux-actions'
+
 import FlatButton from 'material-ui/lib/flat-button'
 import List from 'material-ui/lib/lists/list'
 import ListItem from 'material-ui/lib/lists/list-item'
@@ -13,58 +15,39 @@ import IconMenu from 'material-ui/lib/menus/icon-menu'
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 
-const ADD_TODO = 'ADD_TODO'
-const TOGGLE_TODO = 'TOGGLE_TODO'
-const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
+import * as C from './constants'
 
-const SHOW_ALL = 'SHOW_ALL'
-const SHOW_COMPLETED = 'SHOW_COMPLETED'
-const SHOW_ACTIVE = 'SHOW_ACTIVE'
-
-const todo = (state, action) => {
-  switch (action.type) {
-    case ADD_TODO:
-      return {
-        id: action.id,
-        text: action.text,
-        completed: false
-      }
-    case TOGGLE_TODO:
-      if (state.id !== action.id) {
-        return state
-      }
-
-      return {
-        ...state,
-        completed: !state.completed
-      }
-    default:
+const todo = handleActions({
+  [C.ADD_TODO]: (state, action) => {
+    return {
+      id: action.payload.id,
+      text: action.payload.text,
+      completed: false
+    }
+  },
+  [C.TOGGLE_TODO]: (state, action) => {
+    if (state.id !== action.payload.id) {
       return state
-  }
-}
+    }
 
-const todos = (state = [], action) => {
-  switch (action.type) {
-    case ADD_TODO:
-      return [
-        ...state,
-        todo(undefined, action)
-      ]
-    case TOGGLE_TODO:
-      return state.map(t => todo(t, action))
-    default:
-      return state
+    return {
+      ...state,
+      completed: !state.completed
+    }
   }
-}
+})
 
-const visibilityFilter = (state = SHOW_ALL, action) => {
-  switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return action.filter
-    default:
-      return state
-  }
-}
+const todos = handleActions({
+  [C.ADD_TODO]: (state, action) => [
+    ...state,
+    todo(undefined, action)
+  ],
+  [C.TOGGLE_TODO]: (state, action) => state.map(t => todo(t, action))
+}, [])
+
+const visibilityFilter = handleActions({
+  [C.SET_VISIBILITY_FILTER]: (state, action) => action.payload.filter
+}, C.SHOW_ALL)
 
 const todoApp = combineReducers({
   todos,
@@ -108,12 +91,10 @@ const mapDispatchToLinkProps = (
   dispatch,
   ownProps
 ) => {
+  const filter = ownProps.filter
   return {
     onClick: () => {
-      dispatch({
-        type: SET_VISIBILITY_FILTER,
-        filter: ownProps.filter
-      })
+      dispatch(createAction(C.SET_VISIBILITY_FILTER)({filter}))
     }
   }
 }
@@ -127,15 +108,15 @@ const Footer = () => {
     <p>
       <b>Filter:</b>
       {' '}
-      <FilterLink filter={ SHOW_ALL }>
+      <FilterLink filter={ C.SHOW_ALL }>
         All
       </FilterLink>
       {' '}
-      <FilterLink filter={ SHOW_ACTIVE }>
+      <FilterLink filter={ C.SHOW_ACTIVE }>
         Active
       </FilterLink>
       {' '}
-      <FilterLink filter={ SHOW_COMPLETED }>
+      <FilterLink filter={ C.SHOW_COMPLETED }>
         Completed
       </FilterLink>
     </p>
@@ -205,11 +186,10 @@ AddTodo = connect(
   (dispatch) => {
     return {
       addTodo: (text) => {
-        dispatch({
-          type: ADD_TODO,
+        dispatch(createAction(C.ADD_TODO)({
           id: nextTodoId++,
           text
-        })
+        }))
       }
     }
   }
@@ -220,11 +200,11 @@ const getVisibleTodos = (
   filter
 ) => {
   switch (filter) {
-    case SHOW_ALL:
+    case C.SHOW_ALL:
       return todos
-    case SHOW_ACTIVE:
+    case C.SHOW_ACTIVE:
       return todos.filter(t => !t.completed)
-    case SHOW_COMPLETED:
+    case C.SHOW_COMPLETED:
       return todos.filter(t => t.completed)
   }
 }
@@ -244,10 +224,7 @@ const mapDispatchToTodoListProps = (
 ) => {
   return {
     onTodoClick: (id) => {
-      dispatch({
-        type: TOGGLE_TODO,
-        id
-      })
+      dispatch(createAction(C.TOGGLE_TODO)({id}))
     }
   }
 }
