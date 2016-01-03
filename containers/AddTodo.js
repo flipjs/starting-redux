@@ -20,6 +20,7 @@ let AddTodo = ({ addTodo }) => {
       <TextField
         hintText='Enter Todo'
         ref={ node => input = node }
+        onKeyDown={ (e) => e.keyCode === 13 && onAddTodoClick() }
       />
       { ' ' }
       <FlatButton primary label='Click to add' onClick={ onAddTodoClick } />
